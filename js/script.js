@@ -1,15 +1,14 @@
 function doOperation(string) {
 
-    try {
-        var result = eval(string);
-        if ( isNaN( Number(result) ) || result === Infinity ) result = 'ERROR';
-        return fixFloats(result);
-    } catch(err) {
-        return 'ERROR';
-    }
+  try {
+    var result = Number( eval(string) );
+    return ( isNaN(result) || result === Infinity ) ?
+      'ERROR' : fixFloats(result);
+  } catch(err) {
+    return 'ERROR';
+  }
 
 } // doOperation
-
 
 
 /*
@@ -20,9 +19,9 @@ function doOperation(string) {
  */
 function fixFloats(number) {
 
-    number = number.toFixed(6);
-    var re = /\.?0*$/;
-    return number.replace(re, '');
+  number = Number(number).toFixed(6);
+  var re = /\.?0*$/;
+  return number.replace(re, '');
 
 } // fixFloats
 
@@ -30,79 +29,79 @@ function fixFloats(number) {
 
 (function calculator() {
 
-    var display      = document.getElementById('display');
-    var keys         = document.getElementById('keys');
-    var decimalUsed  = false;
-    var newOperation = true;
+  var display      = document.getElementById('display');
+  var keys         = document.getElementById('keys');
+  var decimalUsed  = false;
+  var newOperation = true;
 
-    keys.addEventListener('click', function(e) {
+  keys.addEventListener('click', function(e) {
 
-        var target = e.target;
-        if ( !(target instanceof HTMLButtonElement) ) return;
+    var target = e.target;
+    if ( !(target instanceof HTMLButtonElement) ) return;
 
-        var key = target.value;
+    var key = target.value;
 
-        switch (key) {
-            case 'del':
-                if (display.innerHTML === 'ERROR') break;
-                var charToDelete = display.innerHTML[display.innerHTML.length - 1];
+    switch (key) {
+      case 'del':
+        if (display.innerHTML === 'ERROR') break;
+        var charToDelete = display.innerHTML[display.innerHTML.length - 1];
 
-                if (charToDelete === '.') decimalUsed = false;
-                if (['+', '-', '*', '/'].indexOf(charToDelete) >= 0) decimalUsed = true;
+        if (charToDelete === '.') decimalUsed = false;
+        if (['+', '-', '*', '/'].indexOf(charToDelete) >= 0) decimalUsed = true;
 
-                display.innerHTML = display.innerHTML.slice(0,-1);
-                break;
+        display.innerHTML = display.innerHTML.slice(0,-1);
+        break;
 
-            case 'ac':
-                display.innerHTML = '0';
-                decimalUsed = false;
-                newOperation = true;
-                break;
+      case 'ac':
+        display.innerHTML = '0';
+        decimalUsed = false;
+        newOperation = true;
+        break;
 
-            case '=':
-                display.innerHTML = doOperation(display.innerHTML);
-                decimalUsed = false;
-                newOperation = true;
-                break;
+      case '=':
+        display.innerHTML = doOperation(display.innerHTML);
+        decimalUsed = false;
+        newOperation = true;
+        break;
 
-            case '.':
-                if (newOperation) {
-                    display.innerHTML = '';
-                    newOperation = false;
-                }
+      case '.':
+        if (newOperation) {
+          display.innerHTML = '';
+          newOperation = false;
+        }
 
-                if (decimalUsed) return;
+        if (decimalUsed) return;
 
-                display.innerHTML += '.';
-                decimalUsed = true;
-                break;
+        display.innerHTML += '.';
+        decimalUsed = true;
+        break;
 
-            case 'sign':
-                display.innerHTML[0] === '-' ?
-                  display.innerHTML = display.innerHTML.substring(1) :
-                  display.innerHTML = '-' + display.innerHTML;
-                break;
+      case 'sign':
+        display.innerHTML[0] === '-' ?
+          display.innerHTML = display.innerHTML.substring(1) :
+          display.innerHTML = '-' + display.innerHTML;
+        break;
 
-            case '+':
-            case '-':
-            case '*':
-            case '/':
-                if (display.innerHTML === 'ERROR') break;
-                newOperation    = false;
-                decimalUsed     = false;
-                display.innerHTML += key;
-                break;
+      case '+':
+      case '-':
+      case '*':
+      case '/':
+        if (display.innerHTML === 'ERROR') break;
+        newOperation    = false;
+        decimalUsed     = false;
+        display.innerHTML += key;
+        break;
 
-            default:
-                if ( display.innerHTML === 'ERROR' || newOperation) {
-                    display.innerHTML = '';
-                }
+      default:
+        if ( display.innerHTML === 'ERROR' || newOperation) {
+          display.innerHTML = '';
+        }
 
-                newOperation = false;
-                display.innerHTML += key;
+        newOperation = false;
+        display.innerHTML += key;
 
-        } // switch
+    } // switch
 
-    }); // addEventListener
+  }); // addEventListener
 
 }) (); // calculator
